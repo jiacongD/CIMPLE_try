@@ -1,0 +1,74 @@
+
+```{r}
+rm(list=ls())
+load("~/longitudinalEHR/organized_task2/step1_sim_train_data.RData")
+source("~/longitudinalEHR/organized_task2/task2_fun.R")
+ls()
+```
+
+Take a look at the two datasets.
+
+```{r}
+head(long_data)
+head(surv_data)
+```
+
+Set up the variable name before running the analysis.
+```{r}
+# define the variables
+id_var = "id"
+time_var = "time"
+SM_variables = c("Z","X","Y")
+SM_base_variables = c("Z","X")
+LM_fixedEffect_withTime_variables = c("Z","X","time")
+LM_fixedEffect_withoutTime_variables = c("Z","X")
+LM_randomEffect_variables = c("Z")
+# survival_time = "D" # add the arguement
+# survival_event = "d"
+```
+
+```{r}
+
+print("start the Cox model")
+time_start = Sys.time()
+alpha_hat_coxph = cox_fun(long_data, surv_data)
+time_end = Sys.time()
+time_coxph = as.numeric(difftime(time_end, time_start, units = "secs")); names(time_coxph) = "coxph"
+print(alpha_hat_coxph)
+```
+
+```{r}
+print("start JMLD")
+time_start = Sys.time()
+alpha_hat_JMLD = JMLD_fun(long_data, surv_data)
+time_end = Sys.time()
+time_JMLD = as.numeric(difftime(time_end, time_start, units = "secs")); names(time_JMLD) = "JMLD"
+print(alpha_hat_JMLD$surv_proc)
+```
+
+```{r}
+print("start Imputation_Cox")
+time_start = Sys.time()
+alpha_hat_imp_cox = Imputation_Cox_fun(long_data, surv_data,imp_time_factor = 0.5)
+time_end = Sys.time()
+time_imp_cox = as.numeric(difftime(time_end, time_start, units = "secs")); names(time_imp_cox) = "Imputation_Cox"
+print(alpha_hat_imp_cox)
+```
+
+```{r}
+print("start VAImputation_Cox")
+time_start = Sys.time()
+alpha_hat_VAimp_cox = VAImputation_Cox_fun(long_data, surv_data,imp_time_factor = 0.5)
+time_end = Sys.time()
+time_VAimp_cox = as.numeric(difftime(time_end, time_start, units = "secs")); names(time_VAimp_cox) = "VAImputation_Cox"
+print(alpha_hat_VAimp_cox)
+```
+
+```{r}
+print("start VA_JMLD")
+time_start = Sys.time()
+alpha_hat_VAJMLD = VA_JMLD_fun(long_data, surv_data)
+time_end = Sys.time()
+time_VAJMLD = as.numeric(difftime(time_end, time_start, units = "secs")); names(time_VAJMLD) = "VA_JMLD"
+print(alpha_hat_VAJMLD$surv_proc)
+```

@@ -1,0 +1,115 @@
+
+# CIMPLE: clinically informative missingness through probabilities, likelihoods, and estimating equations
+
+# long_est
+# surv_est
+
+# Example for Task 1
+## Estimating parameters in the longitudinal model
+```{r}
+# Load the data and source functions
+rm(list=ls())
+load("~/longitudinalEHR/organized/step1_sim_train_data.RData")
+source("~/longitudinalEHR/organized/task1_fun.R")
+```
+
+## Data overview
+The data is in long format.
+```{r}
+head(train_data)
+```
+Some patients have no measurements at all:
+```{r}
+tail(train_data)
+```
+
+Now let's set up parameters to run the analysis.
+```{r}
+### Variables in the models ###
+# dataset
+outcome_var = "Y"
+time_var = "time"
+id_var = "id"
+VPM_variables = c("Z","X") # in the VP model
+LM_fixedEffect_withoutTime_variables = c("Z","X") # in the LP model
+LM_fixedEffect_withTime_variables = c(c("Z","X"),time_var) # in the LP model
+LM_randomEffect_variables = "Z" # in the LP model
+# Method = "LME" # All methods: LME, VA-LME, JMVL-LY, JMVL-Liang, JMVL-G, IIRR, imputation_LME
+
+# All methods: LME, VA-LME, JMVL-LY, JMVL-Liang, JMVL-G, IIRR, imputation_LME
+long_data = train_data
+colnames(long_data)[which(colnames(long_data)==id_var)] = "id"
+colnames(long_data)[which(colnames(long_data)==outcome_var)] = "Y"
+colnames(long_data)[which(colnames(long_data)==time_var)] = "time"
+```
+
+# Run the code but hide warnings
+```{r, warning=FALSE}
+print("start the LME model")
+time.start = Sys.time()
+fit_standardLME = standard_LME_fun(long_data=long_data)
+time.end = Sys.time()
+time_standardLME = difftime(time.end,time.start,units = "secs")
+time_standardLME
+fit_standardLME
+```
+
+```{r, warning=FALSE}
+print("start the VA_LME model")
+time.start = Sys.time()
+fit_VA_LME = VA_LME_fun(long_data=long_data)
+time.end = Sys.time()
+time_VA_LME = difftime(time.end,time.start,units = "secs")
+time_VA_LME
+fit_VA_LME
+```
+
+```{r, warning=FALSE}
+print("start the JMVL_LY model")
+time.start = Sys.time()
+fit_JMVL_LY = JMVL_LY_fun(long_data=long_data)
+time.end = Sys.time()
+time_JMVL_LY = difftime(time.end,time.start,units = "secs")
+time_JMVL_LY
+fit_JMVL_LY
+```
+
+```{r, warning=FALSE}
+print("start the IIRR-weighting model")
+time.start = Sys.time()
+fit_IIRR_weighting = IIRR_weighting_fun(long_data=long_data)
+time.end = Sys.time()
+time_IIRR_weighting = difftime(time.end,time.start,units = "secs")
+time_IIRR_weighting
+fit_IIRR_weighting
+```
+
+```{r, warning=FALSE}
+print("start the JMVL_Liang model")
+time.start = Sys.time()
+fit_JMVL_Liang = JMVL_Liang_fun(long_data=long_data)
+time.end = Sys.time()
+time_JMVL_Liang = difftime(time.end,time.start,units = "secs")
+time_JMVL_Liang
+fit_JMVL_Liang
+```
+
+```{r, warning=FALSE}
+print("start the JMVL_G model")
+time.start = Sys.time()
+fit_JMVL_G = JMVL_G_fun(long_data=long_data)
+time.end = Sys.time()
+time_JMVL_G = difftime(time.end,time.start,units = "secs")
+time_JMVL_G
+fit_JMVL_G$estimates$betas
+```
+
+```{r, warning=FALSE}
+print("start the imputation_LME model")
+time.start = Sys.time()
+fit_imputation_LME = imputation_LME_fun(long_data=long_data)
+time.end = Sys.time()
+time_imputation_LME = difftime(time.end,time.start,units = "secs")
+time_imputation_LME
+fit_imputation_LME
+```
