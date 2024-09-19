@@ -1,3 +1,3 @@
 # CIMPLE_try
 
-This is the README. Testing
+This is the README for the CIMPLE R package
