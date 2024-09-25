@@ -1,4 +1,4 @@
-long_est_1 <- function(long_data, model, LM_fixedEffect_withTime_variables, LM_randomEffect_variables, optCtrl = list(method = "nlminb", kkt = FALSE, tol = 0.2, maxit = 20000)) {
+long_est_1 <- function(long_data, method, LM_fixedEffect_withTime_variables, LM_randomEffect_variables, optCtrl = list(method = "nlminb", kkt = FALSE, tol = 0.2, maxit = 20000)) {
   if (model == "standard_LME") {
     lme_model_formula <- paste(
       "Y ~",
